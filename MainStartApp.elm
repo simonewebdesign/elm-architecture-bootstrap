@@ -4,11 +4,23 @@ import Task exposing (Task)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import StartApp
+import Effects exposing (Effects, Never)
+
+
+app : StartApp.App Model
+app =
+  StartApp.start
+    { init = ( initialModel, Effects.none )
+    , update = update
+    , view = view
+    , inputs = []
+    }
 
 
 main : Signal Html
 main =
-  Signal.map (view actions.address) model
+  app.html
 
 
 -- MODEL
@@ -30,11 +42,11 @@ type Action
   = NoOp
 
 
-update : Action -> Model -> Model
+update : Action -> Model -> ( Model, Effects Action )
 update action model =
   case Debug.log "Main" action of
     NoOp ->
-      model
+      ( model, Effects.none )
 
 
 -- VIEW
@@ -49,21 +61,6 @@ view address model =
 
 -- SIGNALS
 
-actions : Mailbox Action
-actions =
-  Signal.mailbox NoOp
-
-
-model : Signal Model
-model =
-  Signal.foldp update initialModel actions.signal
-
-
-tasksMailbox : Mailbox (Task x ())
-tasksMailbox =
-  Signal.mailbox (Task.succeed ())
-
-
-port tasks : Signal (Task x ())
+port tasks : Signal (Task Never ())
 port tasks =
-  tasksMailbox.signal
+  app.tasks
