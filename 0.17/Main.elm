@@ -1,9 +1,10 @@
 import Html exposing (..)
 import Html.App as Html
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+--import Html.Attributes exposing (..)
+--import Html.Events exposing (onClick)
 
 
+main : Program Never
 main =
   Html.beginnerProgram
     { model = initialModel
@@ -31,6 +32,7 @@ type Msg =
   NoOp
 
 
+update : Msg -> Model -> Model
 update msg model =
   case msg of
     NoOp ->
@@ -39,6 +41,7 @@ update msg model =
 
 -- VIEW
 
+view : Model -> Html Msg
 view model =
   div []
     [
